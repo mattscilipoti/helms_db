@@ -5,6 +5,7 @@ gem 'rails', '4.0.0'
 
 # Use postgresql as the database for Active Record
 gem 'pg'
+gem 'composite_primary_keys' # http://compositekeys.rubyforge.org/
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
@@ -42,4 +43,13 @@ end
 # gem 'capistrano', group: :development
 
 # Use debugger
-# gem 'debugger', group: [:development, :test]
+#gem 'debugger', group: [:development, :test]
+
+gem "typus", :git => "git://github.com/fesplugas/typus.git", :branch => "4-0-stable"
+
+group :development, :test do
+  gem 'bogus', require: false # doubles/fakes/stubs
+  gem 'better_errors'
+  gem 'binding_of_caller', require: false # for better_errors
+  gem 'debugger', require: false
+end
