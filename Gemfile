@@ -52,4 +52,7 @@ group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller', require: false # for better_errors
   gem 'debugger', require: false
+  gem 'fuubar', require: false
+  gem 'guard-rspec', require: false
+  gem 'rspec-rails' # has rake tasks
 end

@@ -50,6 +50,10 @@ class PgNamespace < ActiveRecord::Base
     connection.schema_cache.clear!
   end
 
+  def self.reset
+    connection.schema_search_path = '"$user",public'
+  end
+
 
   def change_owner(new_owner)
     connection.execute change_owner_cmd
