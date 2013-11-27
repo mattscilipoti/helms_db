@@ -1,24 +1,43 @@
-== Database Informer
+== Helms Db
 
-I help you introspect and manage your database.
+My good Legolas, did you know that the caverns of Helm's Deep are vast and beautiful?
+
+Sound like your database?
+
 Do you wonder how many tables you have?
 Want to change the owner of all the entities in a particular db namespace?
+Need to generate an Entity Relationship diagram?
 
-I'm your guy.
+This is an effort to create a single CLI management interface for common databases.
+
+Together, we can subdue your db.  This day we fight!
+
 
 == Setup
 
 I am (will be?) a Rails Engine.
 
+== Usage
+db = Helm::Database.new(configuration) #=> PgDatabase
+db.change_owner('Sauron') #=> db (with new owner)
+db.tables #=> AR::Relationship of Tables
 
 == The Innards
 
 * Ruby >= 1.9.3
 * Dependencies are managed by bundler.
 
+== Design philosphies
+  Similar to jQuery, many methods are chainable.  If it doesn't have an obvious return value, we return the object that was acted upon (usually 'self').
 
 == Helping out
 
 Contact me at matt@scilipoti.name
 Fork, tweak in feature branch, pull request.
+
+== Possible Names
+HelmsDb: at the helm of the Db
+DbManager
+DbInfo
+
 
