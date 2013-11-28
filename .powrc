@@ -1,0 +1,15 @@
+# Supports using rvm and {.ruby-version,.rvmrc} with pow.rc
+# Derived from:
+#   https://coderwall.com/p/pkj39a
+#   http://pow.cx/manual.html#section_2.3.2
+if [ -f "$rvm_path/scripts/rvm" ]; then
+  source "$rvm_path/scripts/rvm"
+
+  if [ -f ".ruby-version" ]; then
+    rvm use `cat .ruby-version`
+  fi
+  # Note: .rvmrc overrides .ruby-version
+  if [ -f ".rvmrc" ]; then
+    source ".rvmrc"
+  fi
+fi
