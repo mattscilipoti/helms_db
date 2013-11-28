@@ -19,36 +19,71 @@ describe PgNamespace, '(class methods)' do
   describe '.current_namespaces' do
     let(:namespace) { 'test_current' }
     after :all do
+      PgNamespace.reset
       PgNamespace.drop_namespace(namespace)
     end
 
     it "returns the namespaces listed in the current schema_search_path" do
       subject = PgNamespace.create!(name: namespace)
-      subject.connection.schema_search_path = namespace
+      PgNamespace.connection.schema_search_path = namespace
 
       expect(PgNamespace.current_namespaces).to include subject
     end
   end
 end
 
-describe PgNamespace do
 
-  describe '#migrate!' do
+describe PgNamespace, '(w/o mocks)' do
+  before :each do
+    PgNamespace.create!(name: namespace)
+    expect(PgNamespace.current_namespace).to_not eql subject
+  end
 
-    it "should activate the namespace" do
-      namespace = 'migrates'
-      begin
-        subject = PgNamespace.create!(name: namespace)
-        expect(PgNamespace.current_namespace).to_not eql subject
-        subject.migrate!
-        expect(PgNamespace.current_namespace).to eql subject
-      ensure
-        PgNamespace.reset
-        PgNamespace.drop_namespace(namespace)
-      end
+  after :each do
+    PgNamespace.reset
+    PgNamespace.drop_namespace(namespace)
+  end
+
+
+  describe '#change_owner' do
+    let(:namespace) { 'change_owner' }
+    subject { PgNamespace.find(namespace) }
+
+    it "should return self" do
+      stub(PgNamespace.connection).execute(any_args) { true } # neuter execute
+      expect(subject.change_owner('test')).to eq(subject)
     end
 
-    it "should run migrations in this namespace"
+    it "should change the owner" do
+      PgDatabase.new.create_role('new_owner')
+      #db_owner = PgNamespace.connection_config[:username] || ENV['USER']
+      expect(subject.owner).to_not eql('new_owner')
+      subject.change_owner('new_owner')
+      expect(subject.owner).to eql('new_owner')
+    end
+  end
+
+  describe '#migrate!' do
+    let(:namespace) { 'migrates' }
+    subject { PgNamespace.find(namespace) }
+
+    before :each do
+      fake_class(ActiveRecord::Migrator) # neuter the migrator
+    end
+
+    it "should return self" do
+      expect(subject.migrate!).to eq(subject)
+    end
+
+    it "should activate the namespace" do
+      subject.migrate!
+      expect(PgNamespace.current_namespace).to eql subject
+    end
+
+    it "should run migrations in this namespace" do
+      subject.migrate!
+      ActiveRecord::Migrator.should have_received.migrate(any_args)
+    end
 
     it "should indicate a possible permission issue when Postgres indicates PG::InvalidSchemaName" do
       # fix the message, then fix the bug

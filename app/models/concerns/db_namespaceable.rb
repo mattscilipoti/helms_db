@@ -6,8 +6,8 @@ module Concerns::DbNamespaceable
     self
   end
 
-  def current_namespace
-    self.class.current_namespace
+  def current_search_path
+    self.class.current_search_path
   end
 
   # template method
@@ -28,12 +28,12 @@ module Concerns::DbNamespaceable
     end
 
 
-    def current_namespace
+    def current_search_path
       connection.schema_search_path
     end
 
     def use(data_namespace)
-      old_namespace = current_namespace
+      old_namespace = current_search_path
       activate!(data_namespace)
       yield
     ensure

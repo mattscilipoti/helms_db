@@ -27,7 +27,7 @@ class PgNamespace < ActiveRecord::Base
   end
 
   def self.current_namespace
-    raise "Multiple Namespaces" if current_namespaces.size > 1
+    raise "Multiple Namespaces exist" if current_namespaces.size > 1
     current_namespaces.first
   end
 
@@ -46,8 +46,7 @@ class PgNamespace < ActiveRecord::Base
     fail ArgumentError.new("You can not drop the current namespace (#{connection.schema_search_path})") if connection.schema_search_path =~ /#{data_namespace}/
     logger.warn "Dropping db namespace '#{data_namespace}'."
     connection.execute("drop schema if exists #{data_namespace} cascade")
-    # TODO: is clear needed?
-    connection.schema_cache.clear!
+    #connection.schema_cache.clear!
   end
 
   def self.reset
@@ -56,11 +55,26 @@ class PgNamespace < ActiveRecord::Base
 
 
   def change_owner(new_owner)
-    connection.execute change_owner_cmd
+    PgNamespace.connection.execute change_owner_cmd(new_owner)
+    # update AR since we made change directly on db
+    # TODO: can we just invalidate owner/owner_id?
+    reload
+
+    self
   end
 
   def change_owner_cmd(new_owner)
-    "ALTER #{nspname} OWNER TO #{new_owner}"
+    "ALTER SCHEMA #{nspname} OWNER TO #{new_owner}"
+  end
+
+  def owner
+    # TODO: relation?
+    result = PgNamespace.connection.exec_query "SELECT pg_catalog.pg_get_userbyid(#{owner_id})"
+    result.to_hash.first.fetch('pg_get_userbyid') # only on row should be returned
+  end
+
+  def owner_id
+    nspowner
   end
 
   def data_namespace
@@ -76,7 +90,7 @@ class PgNamespace < ActiveRecord::Base
     ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths, ENV["VERSION"] ? ENV["VERSION"].to_i : nil) do |migration|
       ENV["SCOPE"].blank? || (ENV["SCOPE"] == migration.scope)
     end
-    #end
+
     self
   end
 end
