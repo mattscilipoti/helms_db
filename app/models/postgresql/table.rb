@@ -1,7 +1,8 @@
-class PgTable < ActiveRecord::Base
+class Postgresql::Table < ActiveRecord::Base
   self.primary_keys = :schemaname, :tablename
+  self.table_name = 'pg_tables'
 
-  belongs_to :pg_namespace, primary_key: 'nspname', foreign_key: 'schemaname'
+  belongs_to :namespace, primary_key: 'nspname', foreign_key: 'schemaname'
 
   #scope :non_system, -> { where('schemaname = ANY (current_schemas(false))') }
   #

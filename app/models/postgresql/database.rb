@@ -1,4 +1,4 @@
-class PgDatabase < ActiveRecord::Base
+class Postgresql::Database < ActiveRecord::Base
   self.primary_key = 'datname'
   self.table_name = 'pg_catalog.pg_database'
   alias_attribute :name, :datname
@@ -14,7 +14,7 @@ class PgDatabase < ActiveRecord::Base
   end
 
   def create_role(role_name)
-    PgDatabase.connection.execute commander.create_role_cmd(role_name)
+    Postgresql::Database.connection.execute commander.create_role_cmd(role_name)
     PgRole.find(role_name)
   end
 

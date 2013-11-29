@@ -18,7 +18,7 @@ Together, we can subdue your db.  This day we fight!
 I am (will be?) a Rails Engine.
 
 == Usage
-db = Helm::Database.new(configuration) #=> PgDatabase
+db = Helm::Database.new(configuration) #=> Postgresql::Database
 db.change_owner('Sauron') #=> db (with new owner)
 db.tables #=> AR::Relationship of Tables
 

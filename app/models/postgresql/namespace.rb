@@ -1,11 +1,11 @@
-class PgNamespace < ActiveRecord::Base
+class Postgresql::Namespace < ActiveRecord::Base
   include Concerns::DbNamespaceable
   self.primary_key = 'nspname'
   self.table_name = 'pg_namespace'
 
   #has_many :pg_classes, foreign_key: 'relnamespace', primary_key: 'oid'
-  has_many :pg_indices, class_name: 'PgIndex', foreign_key: 'schemaname', primary_key: 'nspname'
-  has_many :pg_indexes, class_name: 'PgIndex', foreign_key: 'schemaname', primary_key: 'nspname'
+  has_many :pg_indices, class_name: 'Postgresql::Index', foreign_key: 'schemaname', primary_key: 'nspname'
+  has_many :pg_indexes, class_name: 'Postgresql::Index', foreign_key: 'schemaname', primary_key: 'nspname'
   has_many :pg_tables, foreign_key: 'schemaname', primary_key: 'nspname'
   has_many :pg_views, foreign_key: 'schemaname', primary_key: 'nspname'
 
@@ -34,7 +34,7 @@ class PgNamespace < ActiveRecord::Base
   # returns the namespaces listed in the current schema_search_path
   def self.current_namespaces
     connection.schema_search_path.split(',').collect do |search_item|
-      PgNamespace.find_by_nspname(search_item)
+      Postgresql::Namespace.find_by_nspname(search_item)
     end.compact
   end
 
@@ -55,7 +55,7 @@ class PgNamespace < ActiveRecord::Base
 
 
   def change_owner(new_owner)
-    PgNamespace.connection.execute change_owner_cmd(new_owner)
+    Postgresql::Namespace.connection.execute change_owner_cmd(new_owner)
     # update AR since we made change directly on db
     # TODO: can we just invalidate owner/owner_id?
     reload
@@ -69,7 +69,7 @@ class PgNamespace < ActiveRecord::Base
 
   def owner
     # TODO: relation?
-    result = PgNamespace.connection.exec_query "SELECT pg_catalog.pg_get_userbyid(#{owner_id})"
+    result = Postgresql::Namespace.connection.exec_query "SELECT pg_catalog.pg_get_userbyid(#{owner_id})"
     result.to_hash.first.fetch('pg_get_userbyid') # only on row should be returned
   end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe PgDatabase do
-  subject { PgDatabase.find(ActiveRecord::Base.connection_config[:database]) }
+describe Postgresql::Database do
+  subject { Postgresql::Database.find(ActiveRecord::Base.connection_config[:database]) }
 
   describe '(defaults)' do
     it { should be_readonly }
@@ -21,8 +21,8 @@ describe PgDatabase do
   end
 end
 
-describe 'PgDatabase (class methods)' do
-  subject { PgDatabase }
+describe 'Postgresql::Database (class methods)' do
+  subject { Postgresql::Database }
 
   its(:primary_key) { should == 'datname' }
   its(:table_name) { should == 'pg_catalog.pg_database' }
