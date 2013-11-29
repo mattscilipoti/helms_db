@@ -18,7 +18,8 @@ Together, we can subdue your db.  This day we fight!
 I am (will be?) a Rails Engine.
 
 == Usage
-db = Helm::Database.new(configuration) #=> Postgresql::Database
+db_config = { adapter: 'postgresql', database: 'helm_db_test' }
+db = Helm.find_database(db_config) #=> Postgresql::Database
 db.change_owner('Sauron') #=> db (with new owner)
 db.tables #=> AR::Relationship of Tables
 
@@ -34,10 +35,4 @@ db.tables #=> AR::Relationship of Tables
 
 Contact me at matt@scilipoti.name
 Fork, tweak in feature branch, pull request.
-
-== Possible Names
-HelmsDb: at the helm of the Db
-DbManager
-DbInfo
-
 

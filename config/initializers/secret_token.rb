@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-DbInfo::Application.config.secret_key_base = '225ca36da87ac4a1a0d35ff2fad25368ea535c1802b5232594f692fee836527a2f4d8251ab4192b45180aeae7902eb81ba8d9db8daa1a61ebc5fbf1c1375b69e'
+HelmsDb::Application.config.secret_key_base = '225ca36da87ac4a1a0d35ff2fad25368ea535c1802b5232594f692fee836527a2f4d8251ab4192b45180aeae7902eb81ba8d9db8daa1a61ebc5fbf1c1375b69e'

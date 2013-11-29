@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Postgresql::Namespace, '(class methods)' do
   describe '.database_name' do
     it "returns the name of the current database" do
-      expect(Postgresql::Namespace.database).to eq 'db_info_test'
+      expect(Postgresql::Namespace.database).to eq 'helms_db_test'
     end
   end
 

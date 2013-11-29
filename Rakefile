@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-DbInfo::Application.load_tasks
+HelmsDb::Application.load_tasks
